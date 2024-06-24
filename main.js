@@ -129,20 +129,20 @@
                                 {
         var k = 0;
             var markedURL;
-        while (urlList.size<=totalImageCount && k<10)
+        while (urlList.size<=totalImageCount)
         {
-            var temp = getPhotoUrls();
+            var activeURLs = getPhotoUrls();
 
             var flag = false;
-            for (var i = 0; i < temp.length; i++)
+            for (var i = 0; i < activeURLs.length; i++)
             {
-                if (temp[i].href == markedURL)
+                if (activeURLs[i] == markedURL)
                 {
                     flag = true;
                 }
-                    urlList.add(temp[i]);
+                    urlList.add(activeURLs[i]);
             }
-            markedURL = temp[temp.length-1].href;
+            markedURL = activeURLs[activeURLs.length-1];
             if (flag)
             {
                 autoScroll();
@@ -151,10 +151,10 @@
             {
                 window.scrollTo(0, document.body.scrollHeight - 200);
             }
-
+             console.log('list size' + urlList.size + ' ' + flag + ' ' + markedURL);
             k++;
         }
-            //make async and wait
+            //make async and wait every iteration!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             //получаем все ссылки изображений на странице, "кликаем" и скачиваем все изображения на странице, отмечая их id как скачанные,
             //так же отмечаем самую первую и самую последнюю, двигаемся в самый низ если не находим последнюю то двигаемся немного назад так продолжать пока не скачаем весь альбом
