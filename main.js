@@ -34,6 +34,7 @@
 // @grant          GM_registerMenuCommand
 // @grant          GM.addValueChangeListener
 // @icon           https://vk.com/favicon.ico
+// @require     https://raw.githubusercontent.com/eligrey/FileSaver.js/master/dist/FileSaver.min.js
 // ==/UserScript==
 
 (function() {
@@ -124,50 +125,50 @@
 
         let urlList = new Set();
 
-        button.addEventListener('click',
-                                function()
-                                {
-        var k = 0;
-            var markedURL;
-        while (urlList.size<=totalImageCount)
-        {
+        var scrollingDownCooldown = 1000;
+button.addEventListener('click', function() {
+    var k = 0;
+    var markedURL;
+    window.scrollTo(0, document.body.scrollHeight);
+    function processNextURL() {
+        if (urlList.size < totalImageCount) {
             var activeURLs = getPhotoUrls();
-
             var flag = false;
-            for (var i = 0; i < activeURLs.length; i++)
-            {
-                if (activeURLs[i] == markedURL)
-                {
+
+            for (var i = 0; i < activeURLs.length; i++) {
+                if (activeURLs[i] == markedURL) {
                     flag = true;
                 }
-                    urlList.add(activeURLs[i]);
+                urlList.add(activeURLs[i]);
             }
-            markedURL = activeURLs[activeURLs.length-1];
-            if (flag)
-            {
+
+            markedURL = activeURLs[activeURLs.length - 1];
+
+            if (flag) {
                 autoScroll();
+            } else {
+                window.scrollTo(0, document.body.scrollHeight - 100);
             }
-            else
-            {
-                window.scrollTo(0, document.body.scrollHeight - 200);
-            }
-             console.log('list size' + urlList.size + ' ' + flag + ' ' + markedURL);
+
+            console.log('list size: ' + urlList.size + ', flag: ' + flag + ', markedURL: ' + markedURL + ' ' + document.body.scrollHeight);
             k++;
+
+            // Wait approximately 500ms before processing the next URL
+            setTimeout(processNextURL, scrollingDownCooldown);
         }
-            //make async and wait every iteration!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        else
+        {
+            console.log('success!!!');
+            var stringArray = Array.from(urlList);
+            var blob = new Blob([stringArray.join("\n")], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, 'urlList_' + userId + '.txt');
+        }
+    }
 
-            //получаем все ссылки изображений на странице, "кликаем" и скачиваем все изображения на странице, отмечая их id как скачанные,
-            //так же отмечаем самую первую и самую последнюю, двигаемся в самый низ если не находим последнюю то двигаемся немного назад так продолжать пока не скачаем весь альбом
+    // Start processing URLs
+    processNextURL();
+});
 
-
-            var it =urlList.values();
-//get first entry:
-var first = it.next();
-//get value out of the iterator entry:
-var value = first.value;
-
-
-                               });
 
 
 
