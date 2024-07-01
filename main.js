@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           VK Photo Album Links Scraper
 // @namespace      http://tampermonkey.net/
-// @version        0.3
+// @version        0.91
 // @description    try to take over the world!
 // @author         XSiL
 // @match          *://vk.com/*
@@ -200,6 +200,7 @@
             var repetitionCounter = 0;
             var markedURL;
             var previousMarkedURL;
+            var targetPosition = 0;
 
             function downloadList()
             {
@@ -213,7 +214,7 @@
                 if (repetitionCounter >= 10)
                 {
                     console.log('Unable to collect full list');
-                    if (confirm('Unable to get all links.\n Try increasing scrolling cooldown and decreasing scrolling offset.\n If photos are not loading try later.\n If there are corrupted images in the album you have to delete them manually.\n\nProgess: ' + progressBarText + '\nGet collected links anyway?'))
+                    if (confirm('Unable to get all links.\nTry increasing scrolling cooldown and decreasing scrolling offset.\nIf photos are not loading try later.\nIf there are corrupted images in the album you have to delete them manually.\n\nProgess: ' + progressBarText.textContent + '\nGet collected links anyway?'))
                     {
                         downloadList();
                     }
@@ -249,13 +250,13 @@
 
                     if (flag)
                     {
-                        window.scrollTo(0, document.body.scrollHeight);
+                        targetPosition = document.body.scrollHeight;
                     }
                     else
                     {
-                        window.scrollTo(0, document.body.scrollHeight - scrollingOffset);
+                        targetPosition -= scrollingOffset;
                     }
-
+                    window.scrollTo(0, targetPosition);
                     // Wait 'scrollingCooldown' ms before processing to the next URL
                     setTimeout(processNextURL, scrollingCooldown);
                 }
@@ -267,7 +268,7 @@
                 progressBarText.textContent = urlList.size + '/' + totalImageCount;
 
                 progressBar.style.width = Math.round((urlList.size / totalImageCount) * 100) + '%';
-                console.log('list size: ' + urlList.size + ', flag: ' + flag + ', markedURL: ' + markedURL + ' ' + document.body.scrollHeight);
+                //console.log('list size: ' + urlList.size + ', flag: ' + flag + ', markedURL: ' + markedURL + ' ' + document.body.scrollHeight);
             }
 
             processNextURL();
