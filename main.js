@@ -1,38 +1,13 @@
 // ==UserScript==
 // @name           VK Photo Album Links Scraper
-// @namespace      http://tampermonkey.net/
-// @version        0.91
-// @description    try to take over the world!
+// @namespace      https://github.com/XSiL1337/VK-Photo-Album-Links-Scraper
+// @version        1.0
+// @description    It just works(?)
 // @author         XSiL
 // @match          *://vk.com/*
 // @match          *://vk.ru/*
 // @match          *://*.vk.com/*
 // @match          *://*.vk.ru/*
-// @match          *://*.vk-cdn.com/*
-// @match          *://*.vk-cdn.net/*
-// @match          *://*.userapi.com/*
-// @connect        vk.com
-// @connect        vk.ru
-// @connect        vk-cdn.com
-// @connect        vk-cdn.net
-// @connect        userapi.com
-// @grant          GM.xmlHttpRequest
-// @grant          GM_xmlhttpRequest
-// @grant          GM_download
-// @grant          GM_info
-// @grant          GM_setValue
-// @grant          GM_getValue
-// @grant          GM_deleteValue
-// @grant          GM_listValues
-// @grant          GM_addValueChangeListener
-// @grant          GM_notification
-// @grant          GM.setValue
-// @grant          GM.getValue
-// @grant          GM.deleteValue
-// @grant          GM.listValues
-// @grant          unsafeWindow
-// @grant          GM_registerMenuCommand
-// @grant          GM.addValueChangeListener
 // @icon           https://vk.com/favicon.ico
 // @require        https://raw.githubusercontent.com/eligrey/FileSaver.js/master/dist/FileSaver.min.js
 // ==/UserScript==
@@ -40,7 +15,7 @@
 (function() {
     'use strict';
 
-    console.log('VK Album Downloader is initializing');
+    console.log('VK PALS: Initializing');
 
     //Get album's ID from URL
     const albumID = window.location.pathname.split('album')[1];
@@ -50,14 +25,15 @@
     var executing = false;
 
     //Get all loaded photos' URLs
-    function getPhotoUrls() {
+    function getPhotoUrls()
+    {
         var urls = document.querySelectorAll('a');
         var photoUrls = [];
         for (var i = 0; i<urls.length; i++)
         {
               if (urls[i].href.includes('photo' + userID))
               {
-                  //RAM usage optimization
+                  //RAM usage optimization?
                   //photoUrls.push(urls[i].href.split('_')[1]);
                   photoUrls.push(urls[i].href);
               }
@@ -68,18 +44,17 @@
     //Script starts when page is fully loaded
     window.onload = function()
     {
-        console.log('VK Album Downloader has started');
+        console.log('VK PALS: Started');
         if (!window.location.href.includes('album'))
         {
-            console.log('An album is not found. Script stopped.');
+            console.log('VK PALS: An album is not found. Script stopped.');
             return null;
         }
+
         var totalImageCount = parseInt(document.querySelector("h4").textContent);
         let urlList = new Set();
         var scrollingCooldown = 1000;
         var scrollingOffset = 100;
-
-
 
         //GUI
         var panel = document.createElement('div');
@@ -103,20 +78,20 @@
         name.style.fontSize = '14px';
         name.textContent = 'VK PALS';
 
-        var text1 = document.createElement("span");
-        text1.style.color = "black";
-        text1.style.fontSize = '14px';
-        text1.textContent = 'Cooldown (ms)';
+        var cooldownText = document.createElement("span");
+        cooldownText.style.color = "black";
+        cooldownText.style.fontSize = '14px';
+        cooldownText.textContent = 'Cooldown (ms)';
 
-        var text2 = document.createElement("span");
-        text2.style.color = "black";
-        text2.style.fontSize = '14px';
-        text2.textContent = 'Offset (px)';
+        var offsetText = document.createElement("span");
+        offsetText.style.color = "black";
+        offsetText.style.fontSize = '14px';
+        offsetText.textContent = 'Offset (px)';
 
-        var text3 = document.createElement("span");
-        text3.style.color = "black";
-        text3.style.fontSize = '14px';
-        text3.textContent = 'Album size';
+        var sizeText = document.createElement("span");
+        sizeText.style.color = "black";
+        sizeText.style.fontSize = '14px';
+        sizeText.textContent = 'Album size';
 
         var inputFieldCooldown = document.createElement('input');
         inputFieldCooldown.type = 'text';
@@ -181,11 +156,11 @@
         panel.appendChild(button);
         panel.appendChild(progressBarText);
         panel.appendChild(progressBarContainer);
-        panel.appendChild(text1);
+        panel.appendChild(cooldownText);
         panel.appendChild(inputFieldCooldown);
-        panel.appendChild(text2);
+        panel.appendChild(offsetText);
         panel.appendChild(inputFieldOffset);
-        panel.appendChild(text3);
+        panel.appendChild(sizeText);
         panel.appendChild(inputFieldSize);
 
         window.scrollTo(0, 0);
@@ -213,8 +188,8 @@
             {
                 if (repetitionCounter >= 10)
                 {
-                    console.log('Unable to collect full list');
-                    if (confirm('Unable to get all links.\nTry increasing scrolling cooldown and decreasing scrolling offset.\nIf photos are not loading try later.\nIf there are corrupted images in the album you have to delete them manually.\n\nProgess: ' + progressBarText.textContent + '\nGet collected links anyway?'))
+                    console.log('VK PALS: Unable to collect full list');
+                    if (confirm('VK PALS: Unable to get all links.\nTry increasing scrolling cooldown and decreasing scrolling offset.\nIf photos are not loading try later.\nIf there are corrupted images in the album you have to delete them manually.\n\nProgess: ' + progressBarText.textContent + '\nGet collected links anyway?'))
                     {
                         downloadList();
                     }
@@ -262,7 +237,7 @@
                 }
                 else
                 {
-                    console.log('Complete. Collected full list');
+                    console.log('VK PALS: Completed');
                     downloadList();
                 }
                 progressBarText.textContent = urlList.size + '/' + totalImageCount;
@@ -279,3 +254,9 @@
 
 
 })();//End
+/*
+To do in 1.1
+Memory usage optimization
+Create a separate file for GUI
+Promt user to restart scraping if failed to scrap all links
+*/
