@@ -1,9 +1,9 @@
 ENG: Tampermonkey script for VK.
-Can be used to extract photos' links from a photo album.
+Can be used to extract photos' links from an album.
 I created this scipt for myself to use in conjuction with Jdownloader (correponding plug-in is unable to scrap whole album)
 
 RUS: Tampermonkey скрипт для VK.
-Может быть использован для извлечения ссылок из фото альбома.
+Может быть использован для извлечения ссылок на фото из альбома.
 Я создал данный скрипт для себя, чтобы использовать его вместе с Jdownloader (соотвествующий плагин не может собрать все ссылки)
 
 Tested on:
